@@ -2,5 +2,5 @@ networkx
 protobuf
 
 azure-storage==0.36.0
-tensorflow-gpu==1.15
+tensorflow-gpu==1.15.2
 OpenNMT-tf==1.25.3
