@@ -64,8 +64,12 @@ def process_graph_for_encoder(filename):
 
 
 if __name__ == '__main__':
-    filename = 'example_files/method2graph.pkl'
-    edges, node_features, graph_sizes = process_graph_for_encoder(filename)
+    parser = argparse.ArgumentParser(description='Digest Graphs for GNNs.')
+    parser.add_argument('--target', type=str,
+                        help='Pickled dictionary containing method graphs')
+    args = parser.parse_args()
+
+    edges, node_features, graph_sizes = process_graph_for_encoder(args.target)
 
     encoder = ognn.encoders.GGNNEncoder(BATCH_SIZE, NODE_FEATURE_SIZE)
     outputs, state = encoder(edges, node_features, graph_sizes)
