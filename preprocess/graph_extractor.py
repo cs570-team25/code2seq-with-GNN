@@ -2,6 +2,8 @@ import networkx as nx
 import graph_pb2
 import argparse
 
+import pickle
+
 def read_proto(file_path):
     '''Takes proto file path and returns networkx MultiDiGraph.'''
     # read graph from proto file
@@ -89,6 +91,8 @@ def extract_methods(nx_graph, reverse_edges=True):
 def main(args):
     nx_graph = read_proto(args.proto_file)
     method2graph = extract_methods(nx_graph)
+    with open('method2graph.pkl', 'wb+') as f:
+        pickle.dump(method2graph, f)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Digest Graphs for GNNs.')

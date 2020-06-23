@@ -15,11 +15,35 @@ Example of embedding one method graph using GGNN encoder
 """
 
 
-def process_graph_for_encoder(filename):
+def main(args):
+    method_embeddings = generate_embeddings(args.target)
+
+
+def generate_embeddings(filename):
     with open(filename, 'rb') as f:
         method_graphs = pickle.load(f)
 
-    method_graph = method_graphs['main']
+    def aggregate(node_embeddings):
+        # TODO: aggregate set of node embeddings to the single graph embedding
+        return node_embeddings
+
+    method_embeddings = dict()
+    for name in method_graphs:
+        method_graph = method_graphs[name]
+        edges, node_features, graph_sizes = process_one_method(method_graph)
+
+        encoder = ognn.encoders.GGNNEncoder(BATCH_SIZE, NODE_FEATURE_SIZE)
+        output, state = encoder(edges, node_features, graph_sizes)
+
+        print(output)
+
+        output = aggregate(output)
+        method_embeddings[name] = output
+
+    return method_embeddings
+
+
+def process_one_method(method_graph):
     num_nodes = len(method_graph.nodes)
 
     # step 1: construct sparse tensor denoting all edges
@@ -69,9 +93,4 @@ if __name__ == '__main__':
                         help='Pickled dictionary containing method graphs')
     args = parser.parse_args()
 
-    edges, node_features, graph_sizes = process_graph_for_encoder(args.target)
-
-    encoder = ognn.encoders.GGNNEncoder(BATCH_SIZE, NODE_FEATURE_SIZE)
-    outputs, state = encoder(edges, node_features, graph_sizes)
-
-    print(outputs)
+    main(args)
