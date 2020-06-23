@@ -29,6 +29,7 @@ def generate_embeddings(filename):
 
     method_embeddings = dict()
     for name in method_graphs:
+        tf.reset_default_graph()
         method_graph = method_graphs[name]
         edges, node_features, graph_sizes = process_one_method(method_graph)
 
